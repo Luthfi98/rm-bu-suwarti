@@ -5,7 +5,7 @@ header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 require_once 'config/database.php';
-// session_start();
+session_start();
 
 // Handle preflight OPTIONS request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -80,8 +80,9 @@ function processOrder($cartData) {
         }
 
         // Commit transaction
-        $conn->commit();
         $_SESSION['orderIds'][] = $orderNumber;
+        // var_dump($_SESSION);die;
+        $conn->commit();
         return [
             'success' => true,
             'message' => 'Order berhasil dibuat',

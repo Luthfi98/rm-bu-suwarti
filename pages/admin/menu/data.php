@@ -37,7 +37,7 @@
                 </button>
                 
                 <?php if(isset($_GET['search']) || isset($_GET['category'])): ?>
-                    <a href="/" class="btn btn-clear">
+                    <a href="data-menu.php" class="btn btn-clear">
                         <i class="fas fa-times"></i> Clear Filters
                     </a>
                 <?php endif; ?>
@@ -77,7 +77,8 @@
 
 <style>
 .admin-container {
-    width: 1200px;
+    width: 100%;
+    max-width: 1200px;
     margin: 5rem auto 2rem;
     padding: 0 1rem;
 }
@@ -88,31 +89,21 @@
     align-items: center;
     margin-bottom: 2rem;
     margin-top: 3rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .admin-title {
-    font-size: 1.8rem;
+    font-size: clamp(1.5rem, 4vw, 1.8rem);
     color: white;
     margin: 0;
 }
 
 .admin-menu-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     padding-bottom: 1rem;
-}
-
-@media (max-width: 1024px) {
-    .admin-menu-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .admin-menu-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 .admin-menu-card {
@@ -132,7 +123,7 @@
 
 .menu-card-image {
     width: 100%;
-    height: 200px;
+    height: clamp(150px, 30vw, 200px);
     overflow: hidden;
 }
 
@@ -143,21 +134,21 @@
 }
 
 .menu-card-content {
-    padding: 1.5rem;
+    padding: clamp(1rem, 3vw, 1.5rem);
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
 .menu-item-name {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
     margin: 0 0 0.5rem;
     color: #333;
 }
 
 .menu-item-description {
     color: #666;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
     margin-bottom: 1rem;
     line-height: 1.4;
     flex-grow: 1;
@@ -190,10 +181,10 @@
 }
 
 .btn {
-    padding: 0.5rem 1rem;
+    padding: clamp(0.4rem, 2vw, 0.5rem) clamp(0.8rem, 2vw, 1rem);
     border-radius: 4px;
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -260,6 +251,7 @@
     gap: 1rem;
     align-items: center;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .search-input {
@@ -298,5 +290,108 @@
 
 .btn-clear:hover {
     background: #7f8c8d;
+}
+
+/* Media Queries */
+@media (max-width: 1200px) {
+    .admin-menu-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 992px) {
+    .admin-menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .admin-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .admin-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filter-group {
+        flex-direction: column;
+    }
+
+    .search-input,
+    .category-select {
+        width: 100%;
+    }
+
+    .btn-filter,
+    .btn-clear {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .menu-card-actions {
+        flex-direction: column;
+    }
+
+    .menu-card-actions .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .admin-container {
+        padding: 0 0.5rem;
+    }
+
+    .admin-menu-grid {
+        grid-template-columns: repeat(6, 1fr);
+        gap: 0.5rem;
+    }
+
+    .menu-card-image {
+        height: 100px;
+    }
+
+    .menu-card-content {
+        padding: 0.5rem;
+    }
+
+    .menu-item-name {
+        font-size: 0.8rem;
+        margin-bottom: 0.3rem;
+    }
+
+    .menu-item-description {
+        font-size: 0.7rem;
+        margin-bottom: 0.3rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .menu-item-details {
+        flex-direction: column;
+        gap: 0.2rem;
+        align-items: flex-start;
+    }
+
+    .menu-item-price {
+        font-size: 0.8rem;
+    }
+
+    .menu-item-category {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.4rem;
+    }
+
+    .btn {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.7rem;
+    }
 }
 </style>

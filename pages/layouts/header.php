@@ -1,7 +1,8 @@
 <?php
 require_once 'config/database.php';
 session_start();
-$userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'guest';
+$role = isset($_SESSION['role']) ? $_SESSION['role'] : 'guest';
+$userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
 
 ?>
 <!DOCTYPE html>
@@ -27,7 +28,9 @@ $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'guest';
     <!-- My Style -->
     <link rel="stylesheet" href="assets/css/style.css" />
     <link rel="stylesheet" href="assets/css/auth.css" />
+    <?php if (!$userId): ?>
     <link rel="stylesheet" href="assets/css/modal.css" />
+    <?php endif; ?>
 <script>
   // Pass user information to JavaScript
   const USER_ID = '<?php echo $userId; ?>';
@@ -44,6 +47,9 @@ $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 'guest';
           <a href="data-order.php">Order</a>
           <!-- <a href="index.php?page=adminUser">User</a> -->
           <a href="index.php?page=auth&action=logout">Logout</a>
+        </div>
+        <div class="navbar-extra">
+          <a href="javascript:;" id="hamburger-menu"><i data-feather="menu"></i></a>
         </div>
       <?php else: ?>
         <div class="navbar-nav">

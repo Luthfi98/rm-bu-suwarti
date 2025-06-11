@@ -16,106 +16,30 @@ $status = $_GET['status'] ?? null;
 $startDate = $_GET['start_date'] ?? null;
 $endDate = $_GET['end_date'] ?? null;
 
-// Get all orders with filters
-$orders = getAllOrders($search, $status, $startDate, $endDate);
+// Pagination parameters
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$perPage = 10; // Number of items per page
+$offset = ($page - 1) * $perPage;
+
+// Get total count of orders for pagination
+$totalOrders = getTotalOrders($search, $status, $startDate, $endDate);
+$totalPages = ceil($totalOrders / $perPage);
+
+// Get orders with pagination
+$orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage);
 // var_dump($orders);die;
 ?>
 
 
 <link rel="stylesheet" href="assets/css/admin-order.css">
 
-<style>
-.modal-content {
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-}
-
-.modal-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid #eee;
-}
-
-.modal-body {
-    padding: 1.5rem;
-}
-
-.modal-footer {
-    padding: 1.5rem;
-    border-top: 1px solid #eee;
-}
-
-.order-info {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-
-.info-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-}
-
-.info-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.info-label {
-    font-size: 0.875rem;
-    color: #6c757d;
-}
-
-.info-value {
-    font-size: 1rem;
-    font-weight: 500;
-}
-
-.section-header {
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 1rem;
-    color: #333;
-}
-
-.order-items {
-    margin-top: 1.5rem;
-}
-
-.status-update {
-    display: flex;
-    gap: 0.5rem;
-    align-items: center;
-}
-
-#orderItemsTable {
-    margin-top: 1rem;
-}
-
-#orderItemsTable th {
-    background: #f8f9fa;
-    padding: 0.75rem;
-}
-
-#orderItemsTable td {
-    padding: 0.75rem;
-    vertical-align: middle;
-}
-
-.badge {
-    padding: 0.5rem 0.75rem;
-    font-weight: 500;
-}
-</style>
 
 <!-- Add Bootstrap JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-<div class="admin-order-container">
-    <div class="admin-order-header">
-        <h2>Daftar Pesanan</h2>
+<div class="admin-order-container" >
+    <div class="admin-order-header" style="margin-top: 3rem;">
+        <h2 style="color: white; font-size: 1.8rem; margin: 0;">Daftar Pesanan</h2>
     </div>
 
     <!-- Filter Form -->
@@ -206,26 +130,55 @@ $orders = getAllOrders($search, $status, $startDate, $endDate);
             </div>
 
             <!-- Pagination -->
-            <?php if ($pagination['total'] > 0): ?>
-            <ul class="pagination">
-                <?php if ($pagination['current_page'] > 1): ?>
-                <li class="page-item">
-                    <a class="page-link" href="data-order.php&p=<?= $pagination['current_page'] - 1 ?><?= !empty($_GET['status']) ? '&status=' . $_GET['status'] : '' ?><?= !empty($_GET['search']) ? '&search=' . $_GET['search'] : '' ?><?= !empty($_GET['start_date']) ? '&start_date=' . $_GET['start_date'] : '' ?><?= !empty($_GET['end_date']) ? '&end_date=' . $_GET['end_date'] : '' ?>">Previous</a>
-                </li>
-                <?php endif; ?>
+            <?php if ($totalPages > 1): ?>
+            <div class="pagination-container" style="margin-top: 20px; display: flex; justify-content: center;">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <?php if ($page > 1): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $page - 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $status ? '&status=' . urlencode($status) : '' ?><?= $startDate ? '&start_date=' . urlencode($startDate) : '' ?><?= $endDate ? '&end_date=' . urlencode($endDate) : '' ?>" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <?php endif; ?>
 
-                <?php for ($i = 1; $i <= $pagination['last_page']; $i++): ?>
-                <li class="page-item <?= $i === $pagination['current_page'] ? 'active' : '' ?>">
-                    <a class="page-link" href="data-order.php&p=<?= $i ?><?= !empty($_GET['status']) ? '&status=' . $_GET['status'] : '' ?><?= !empty($_GET['search']) ? '&search=' . $_GET['search'] : '' ?><?= !empty($_GET['start_date']) ? '&start_date=' . $_GET['start_date'] : '' ?><?= !empty($_GET['end_date']) ? '&end_date=' . $_GET['end_date'] : '' ?>"><?= $i ?></a>
-                </li>
-                <?php endfor; ?>
+                        <?php
+                        $startPage = max(1, $page - 2);
+                        $endPage = min($totalPages, $page + 2);
 
-                <?php if ($pagination['current_page'] < $pagination['last_page']): ?>
-                <li class="page-item">
-                    <a class="page-link" href="data-order.php&p=<?= $pagination['current_page'] + 1 ?><?= !empty($_GET['status']) ? '&status=' . $_GET['status'] : '' ?><?= !empty($_GET['search']) ? '&search=' . $_GET['search'] : '' ?><?= !empty($_GET['start_date']) ? '&start_date=' . $_GET['start_date'] : '' ?><?= !empty($_GET['end_date']) ? '&end_date=' . $_GET['end_date'] : '' ?>">Next</a>
-                </li>
-                <?php endif; ?>
-            </ul>
+                        if ($startPage > 1) {
+                            echo '<li class="page-item"><a class="page-link" href="?page=1' . ($search ? '&search=' . urlencode($search) : '') . ($status ? '&status=' . urlencode($status) : '') . ($startDate ? '&start_date=' . urlencode($startDate) : '') . ($endDate ? '&end_date=' . urlencode($endDate) : '') . '">1</a></li>';
+                            if ($startPage > 2) {
+                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                            }
+                        }
+
+                        for ($i = $startPage; $i <= $endPage; $i++):
+                        ?>
+                        <li class="page-item <?= $i === $page ? 'active' : '' ?>">
+                            <a class="page-link" href="?page=<?= $i ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $status ? '&status=' . urlencode($status) : '' ?><?= $startDate ? '&start_date=' . urlencode($startDate) : '' ?><?= $endDate ? '&end_date=' . urlencode($endDate) : '' ?>"><?= $i ?></a>
+                        </li>
+                        <?php endfor; ?>
+
+                        <?php
+                        if ($endPage < $totalPages) {
+                            if ($endPage < $totalPages - 1) {
+                                echo '<li class="page-item disabled"><span class="page-link">...</span></li>';
+                            }
+                            echo '<li class="page-item"><a class="page-link" href="?page=' . $totalPages . ($search ? '&search=' . urlencode($search) : '') . ($status ? '&status=' . urlencode($status) : '') . ($startDate ? '&start_date=' . urlencode($startDate) : '') . ($endDate ? '&end_date=' . urlencode($endDate) : '') . '">' . $totalPages . '</a></li>';
+                        }
+                        ?>
+
+                        <?php if ($page < $totalPages): ?>
+                        <li class="page-item">
+                            <a class="page-link" href="?page=<?= $page + 1 ?><?= $search ? '&search=' . urlencode($search) : '' ?><?= $status ? '&status=' . urlencode($status) : '' ?><?= $startDate ? '&start_date=' . urlencode($startDate) : '' ?><?= $endDate ? '&end_date=' . urlencode($endDate) : '' ?>" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            </div>
             <?php endif; ?>
         </div>
     </div>
@@ -243,44 +196,57 @@ $orders = getAllOrders($search, $status, $startDate, $endDate);
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="order-info">
-                    <div class="info-grid">
-                        <div class="info-item">
-                            <span class="info-label">No. Pesanan</span>
-                            <span id="orderNumber" class="info-value"></span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Tanggal</span>
-                            <span id="orderDate" class="info-value"></span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Status</span>
-                            <span id="orderStatus" class="info-value"></span>
-                        </div>
-                        <div class="info-item">
-                            <span class="info-label">Total</span>
-                            <span id="orderTotal" class="info-value"></span>
+                <div class="row">
+                    <!-- Left Column - Order Info -->
+                    <div class="col col-left">
+                        <div class="order-info">
+                            <div class="section-header">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Informasi Pesanan
+                            </div>
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">No. Pesanan</span>
+                                    <span id="orderNumber" class="info-value"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Tanggal</span>
+                                    <span id="orderDate" class="info-value"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Status</span>
+                                    <span id="orderStatus" class="info-value"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Total</span>
+                                    <span id="orderTotal" class="info-value"></span>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="order-items">
-                    <div class="section-header">
-                        <i class="fas fa-list me-2"></i>
-                        Item Pesanan
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table" id="orderItemsTable">
-                            <thead>
-                                <tr>
-                                    <th>Menu</th>
-                                    <th class="text-end">Harga</th>
-                                    <th class="text-center">Qty</th>
-                                    <th class="text-end">Subtotal</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                    
+                    <!-- Right Column - Order Items -->
+                    <div class="col col-right">
+                        <div class="order-items">
+                            <div class="section-header">
+                                <i class="fas fa-list me-2"></i>
+                                Item Pesanan
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table" id="orderItemsTable">
+                                    <thead>
+                                        <tr>
+                                            <th>Menu</th>
+                                            <th class="text-end">Harga</th>
+                                            <th class="text-center">Qty</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -26,9 +26,11 @@ if ($isAjax) {
  * @param string|null $status Filter by status
  * @param string|null $startDate Filter by start date
  * @param string|null $endDate Filter by end date
+ * @param int $offset Offset for pagination
+ * @param int $limit Limit for pagination
  * @return array Array of orders
  */
-function getAllOrders($search = null, $status = null, $startDate = null, $endDate = null) {
+function getAllOrders($search = null, $status = null, $startDate = null, $endDate = null, $offset = 0, $limit = 10) {
     global $conn;
     try {
         $query = "SELECT o.* 
@@ -56,10 +58,11 @@ function getAllOrders($search = null, $status = null, $startDate = null, $endDat
             $params[] = $endDate;
         }
 
-        $query .= " ORDER BY o.created_at DESC";
-        
+        $query .= " ORDER BY o.created_at DESC LIMIT $limit OFFSET $offset";
+        $params[] = $limit;
+        $params[] = $offset;
         $stmt = $conn->prepare($query);
-        $stmt->execute($params);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch(PDOException $e) {
         error_log("Error getting orders: " . $e->getMessage());
@@ -160,4 +163,41 @@ function updateStatus($orderId, $status) {
             return false;
         }
     }
+
+function getTotalOrders($search = null, $status = null, $startDate = null, $endDate = null) {
+    global $conn;
+    
+    $sql = "SELECT COUNT(*) as total FROM orders WHERE 1=1";
+    $params = array();
+    
+    if ($search) {
+        $sql .= " AND order_number LIKE ?";
+        $params[] = "%$search%";
+    }
+    
+    if ($status) {
+        $sql .= " AND status = ?";
+        $params[] = $status;
+    }
+    
+    if ($startDate) {
+        $sql .= " AND DATE(created_at) >= ?";
+        $params[] = $startDate;
+    }
+    
+    if ($endDate) {
+        $sql .= " AND DATE(created_at) <= ?";
+        $params[] = $endDate;
+    }
+    
+    $stmt = $conn->prepare($sql);
+    if (!empty($params)) {
+        $stmt->execute($params);
+    } else {
+        $stmt->execute();
+    }
+    
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $result['total'];
+}
 ?> 

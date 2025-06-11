@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // Close cart when clicking outside
   document.addEventListener('click', function(e) {
     if (!cartFloating.contains(e.target) && !shoppingCartButton.contains(e.target)) {
-      cartFloating.classList.remove('expanded');
+      // cartFloating.classList.remove('expanded');
     }
   });
 
@@ -280,8 +280,12 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Close modal when clicking the close button
-  closeBtn.onclick = function() {
-    closeModal();
+  if (closeBtn) {
+    closeBtn.onclick = function() {
+      closeModal();
+    }
+  } else {
+    console.error('Error: closeBtn is null');
   }
 
   // Close modal when clicking outside

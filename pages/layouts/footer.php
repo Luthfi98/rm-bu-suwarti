@@ -41,13 +41,13 @@
     }
 
     /* Menu card image standardization */
-    .menu-card-img {
+    /* .menu-card-img {
       width: 200px;
       height: 200px;
       object-fit: cover;
       object-position: center;
       border-radius: 8px;
-    }
+    } */
   </style>
   <footer>
     <div class="socials">
@@ -75,47 +75,33 @@
   </script>
 
 
-<!-- Modal Detail -->
-<div id="detailModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <div class="modal-body">
-      <img id="modalImage" src="" alt="Menu Item">
-      <div class="modal-info">
-        <h3 id="modalTitle"></h3>
-        <p id="modalDescription"></p>
-        <p id="modalPrice"></p>
-        <div class="modal-actions">
-          <button class="btn-modal-cart" onclick="addToCartFromModal()">+ Tambah ke Keranjang</button>
+  <?php if (!isset($_SESSION['user_id'])): ?>
+    
+    
+    
+    
+    <!-- Cart Floating -->
+    <div id="cartFloating" class="cart-floating" hidden>
+      <div class="cart-header">
+        <h3>Keranjang</h3>
+        <span class="cart-count">0</span>
+      </div>
+      <div class="cart-content">
+        <div class="cart-items" style="top: 10px;">
+      <!-- Cart items will be added here dynamically -->
+    </div>
+        <div class="cart-footer">
+          <div class="cart-total">
+            Total: <span id="cartTotal">Rp 0</span>
+            <button class="btn-process" onclick="processOrder()">Proses</button>
+            <button class="btn-checkout">Checkout</button>
+          </div>
+          <div class="cart-actions">
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
-
-
-<!-- Cart Floating -->
-<div id="cartFloating" class="cart-floating">
-  <div class="cart-header">
-    <h3>Keranjang</h3>
-    <span class="cart-count">0</span>
-  </div>
-  <div class="cart-content">
-    <div class="cart-items" style="top: 10px;">
-  <!-- Cart items will be added here dynamically -->
-</div>
-    <div class="cart-footer">
-      <div class="cart-total">
-        Total: <span id="cartTotal">Rp 0</span>
-        <button class="btn-process" onclick="processOrder()">Proses</button>
-        <button class="btn-checkout">Checkout</button>
-      </div>
-      <div class="cart-actions">
-      </div>
-    </div>
-  </div>
-</div> 
+    </div> 
+  <?php endif; ?>
 
   <!-- My Javascript -->
   <script src="assets/js/main.js"></script>

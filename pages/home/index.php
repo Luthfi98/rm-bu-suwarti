@@ -7,6 +7,175 @@ $stmt = $conn->prepare($sql);
 $stmt->execute();
 $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+    <style>
+      .menu .row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr); /* Default for large screens */
+        gap: 20px;
+        padding: 20px;
+      }
+
+      /* Medium screens */
+      @media screen and (max-width: 992px) {
+        .menu .row {
+          grid-template-columns: repeat(2, 1fr); /* col-4 equivalent */
+        }
+      }
+
+      /* Small screens */
+      @media screen and (max-width: 576px) {
+        .menu .row {
+          grid-template-columns: repeat(2, 1fr); /* col-6 equivalent */
+          gap: 15px;
+          padding: 15px;
+        }
+      }
+
+      .menu-card {
+        width: 100%;
+        height: 100%;
+      }
+
+      .menu-card-inner {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .menu-card-img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+      }
+
+      .menu-card-content {
+        flex: 1;
+        padding: 15px;
+      }
+
+      /* Bootstrap-like Modal Styles */
+      .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 9999;
+        overflow-x: hidden;
+        overflow-y: auto;
+        outline: 0;
+      }
+
+      .modal-content {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        width: 90%;
+        max-width: 500px;
+        margin: 1.75rem auto;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid rgba(0, 0, 0, 0.2);
+        border-radius: 0.3rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        animation: modalFadeIn 0.3s ease-out;
+        z-index: 10000;
+      }
+
+      @keyframes modalFadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-50px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .modal-body {
+        position: relative;
+        flex: 1 1 auto;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .modal-body img {
+        width: 100%;
+        height: 250px;
+        object-fit: cover;
+        border-radius: 0.3rem;
+      }
+
+      .modal-info {
+        padding: 0.5rem;
+      }
+
+      .modal-info h3 {
+        margin-bottom: 0.5rem;
+        font-size: 1.25rem;
+        font-weight: 500;
+      }
+
+      .modal-info p {
+        margin-bottom: 0.5rem;
+        color: #6c757d;
+      }
+
+      .close {
+        position: absolute;
+        right: 1rem;
+        top: 1rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        line-height: 1;
+        color: #000;
+        opacity: 0.5;
+        background: none;
+        border: 0;
+        padding: 0;
+        cursor: pointer;
+        z-index: 1;
+      }
+
+      .close:hover {
+        opacity: 0.75;
+      }
+
+      .btn-modal-cart {
+        display: inline-block;
+        font-weight: 400;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        user-select: none;
+        border: 1px solid transparent;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        border-radius: 0.25rem;
+        transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        color: #fff;
+        background-color: #28a745;
+        border-color: #28a745;
+        cursor: pointer;
+        width: 100%;
+      }
+
+      .btn-modal-cart:hover {
+        background-color: #218838;
+        border-color: #1e7e34;
+      }
+
+      .modal-actions {
+        margin-top: 1rem;
+      }
+    </style>
+
 <!-- Hero Section Star -->
 <section class="hero" id="home">
   <main class="content">

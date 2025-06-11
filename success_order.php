@@ -10,6 +10,7 @@
 
 require_once 'pages/layouts/header.php'; 
 $orderIds = isset($_SESSION['orderIds']) ? $_SESSION['orderIds'] : [];
+// var_dump($_SESSION);die;
 
 $orderIdsStr = "'" . implode("','", $orderIds) . "'";
 
