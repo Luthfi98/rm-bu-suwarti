@@ -22,9 +22,9 @@ require_once 'config/database.php';
     <script src="https://unpkg.com/feather-icons"></script>
 
     <!-- My Style -->
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <link rel="stylesheet" href="assets/css/auth.css" />
-    <link rel="stylesheet" href="assets/css/modal.css" />
+    <link rel="stylesheet" href="<?php echo $baseUrl ?>assets/css/style.css" />
+    <link rel="stylesheet" href="<?php echo $baseUrl ?>assets/css/auth.css" />
+    <link rel="stylesheet" href="<?php echo $baseUrl ?>assets/css/modal.css" />
   </head>
   <body>
     <div class="background-image"></div>

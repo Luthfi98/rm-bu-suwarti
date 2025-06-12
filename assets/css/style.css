@@ -108,7 +108,7 @@ body:not(.home-page) .background-image {
 /* Hero Section*/
 
 .hero {
-  min-height: 100vh;
+  min-height: 100dvh;
 
   display: flex;
   align-items: center;
@@ -607,7 +607,7 @@ footer .credit {
     right: -100%;
     background-color: #fff;
     width: 30rem;
-    height: 100vh;
+    height: 100dvh;
     transition: 0.3s;
   }
 
@@ -753,7 +753,7 @@ footer .credit {
     top: 0;
     right: -400px;
     width: 400px;
-    height: 100vh;
+    height: 100dvh;
     background: white;
     box-shadow: -2px 0 5px rgba(0,0,0,0.1);
     transition: right 0.3s ease;
@@ -773,7 +773,7 @@ footer .credit {
 }
 
 .cart-items {
-    max-height: calc(100vh - 200px);
+    max-height: calc(100dvh - 200px);
     overflow-y: auto;
 }
 

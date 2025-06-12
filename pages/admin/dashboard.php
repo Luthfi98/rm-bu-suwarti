@@ -119,7 +119,7 @@ error_log("Category Quantities: " . print_r($categoryQuantities, true));
 
 .dashboard-container {
     padding: 2rem;
-    max-width: 1200px;
+    width: 90%;
     margin: 5rem auto 0;
 }
 

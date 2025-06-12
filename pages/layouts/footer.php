@@ -1,7 +1,7 @@
   <!-- Footer Start -->
   <style>
     body {
-      min-height: 100vh;
+      min-height: 100dvh;
       display: flex;
       flex-direction: column;
     }
@@ -104,8 +104,8 @@
   <?php endif; ?>
 
   <!-- My Javascript -->
-  <script src="assets/js/main.js"></script>
-  <script src="assets/js/script.js"></script>
+  <script src="<?php echo $baseUrl ?>assets/js/main.js"></script>
+  <script src="<?php echo $baseUrl ?>assets/js/script.js"></script>
 
   
   

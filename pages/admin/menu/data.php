@@ -49,7 +49,7 @@
         <?php foreach($menuItems as $item): ?>
         <div class="admin-menu-card">
             <div class="menu-card-image">
-                <img src="assets/img/menu/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
+                <img src="<?php echo $baseUrl ?>assets/img/menu/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
             </div>
             <div class="menu-card-content">
                 <h3 class="menu-item-name"><?php echo $item['name']; ?></h3>

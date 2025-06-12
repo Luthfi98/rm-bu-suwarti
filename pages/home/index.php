@@ -10,36 +10,51 @@ $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <style>
       .menu .row {
         display: grid;
-        grid-template-columns: repeat(3, 1fr); /* Default for large screens */
+        grid-template-columns: repeat(3, 1fr);
         gap: 20px;
         padding: 20px;
+        max-width: 1200px;
+        margin: 0 auto;
       }
 
       /* Medium screens */
       @media screen and (max-width: 992px) {
         .menu .row {
-          grid-template-columns: repeat(2, 1fr); /* col-4 equivalent */
+          grid-template-columns: repeat(2, 1fr);
+          gap: 15px;
+          padding: 15px;
         }
       }
 
       /* Small screens */
       @media screen and (max-width: 576px) {
         .menu .row {
-          grid-template-columns: repeat(2, 1fr); /* col-6 equivalent */
+          grid-template-columns: 1fr;
           gap: 15px;
-          padding: 15px;
+          padding: 10px;
         }
       }
 
       .menu-card {
         width: 100%;
         height: 100%;
+        background-color: #ffffff;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s ease;
+      }
+
+      .menu-card:hover {
+        transform: translateY(-5px);
       }
 
       .menu-card-inner {
         height: 100%;
         display: flex;
         flex-direction: column;
+        background-color: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
       }
 
       .menu-card-img {
@@ -51,6 +66,59 @@ $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
       .menu-card-content {
         flex: 1;
         padding: 15px;
+        background-color: #ffffff;
+      }
+
+      .menu-card-title {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        color: #333;
+      }
+
+      .menu-card-desc {
+        font-size: 0.9rem;
+        color: #666;
+        margin-bottom: 10px;
+      }
+
+      .menu-card-price {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #28a745;
+        margin-bottom: 15px;
+      }
+
+      .menu-card-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .btn-detail, .btn-cart {
+        flex: 1;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.9rem;
+        transition: background-color 0.2s ease;
+      }
+
+      .btn-detail {
+        background-color: #f8f9fa;
+        color: #333;
+      }
+
+      .btn-cart {
+        background-color: #28a745;
+        color: white;
+      }
+
+      .btn-detail:hover {
+        background-color: #e9ecef;
+      }
+
+      .btn-cart:hover {
+        background-color: #218838;
       }
 
       /* Bootstrap-like Modal Styles */
@@ -194,7 +262,7 @@ $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
   <div class="row">
     <div class="about-img">
-      <img src="assets/img/tentangkamiayam.png" alt="Tentang Kami" />
+      <img src="<?php echo $baseUrl ?>assets/img/tentangkamiayam.png" alt="Tentang Kami" />
     </div>
 
     <div class="content">
@@ -233,7 +301,7 @@ $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php foreach($menuItems as $item): ?>
     <div class="menu-card" data-category="<?= $item['category'] ?>" data-id="<?= $item['id'] ?>">
       <div class="menu-card-inner">
-        <img src="assets/img/menu/<?= $item['image'] ?>" alt="<?= $item['name'] ?>" class="menu-card-img">
+        <img src="<?php echo $baseUrl ?>assets/img/menu/<?= $item['image'] ?>" alt="<?= $item['name'] ?>" class="menu-card-img">
         <div class="menu-card-content">
           <h3 class="menu-card-title">- <?= $item['name'] ?> -</h3>
           <p class="menu-card-desc"><?= $item['description'] ?></p>

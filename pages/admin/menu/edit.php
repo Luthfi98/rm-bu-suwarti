@@ -45,7 +45,7 @@
         <div class="form-group" style="margin-bottom: 1.8rem;">
             <label for="image" style="display: block; margin-bottom: 0.6rem; font-weight: 500; color: #2c3e50; font-size: 0.95rem;">Current Image</label>
             <div style="display: flex; flex-direction: column; gap: 1rem;">
-                <img src="assets/img/menu/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" style="max-width: 200px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                <img src="<?php echo $baseUrl ?>assets/img/menu/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" style="max-width: 200px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
                 <input type="file" id="image" name="image" accept="image/*" onchange="previewImage(this)">
                 <small style="color: #6c757d; font-size: 0.875rem;">Leave empty to keep current image</small>
                 <div id="imagePreview" style="display: none; width: 100%; max-width: 300px; margin: 0 auto;">

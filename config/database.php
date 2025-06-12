@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'ayam_suwarti';
+$dbname = 'ayam_suwanti';
 $username = 'root';
 $password = '';
 

@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Handle image upload
         $image = null;
         if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = 'assets/img/menu/';
+            $uploadDir = '<?php echo $baseUrl ?>assets/img/menu/';
             $fileExtension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
             $allowedExtensions = ['jpg', 'jpeg', 'png'];
 

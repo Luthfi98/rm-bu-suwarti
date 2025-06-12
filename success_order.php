@@ -51,7 +51,7 @@ if ($orderNumber) {
 }
 ?>
 
-<link rel="stylesheet" href="assets/css/order-detail.css">
+<link rel="stylesheet" href="<?php echo $baseUrl ?>assets/css/order-detail.css">
 
 <div class="order-container">
     <!-- Left Side - Order List -->
@@ -100,7 +100,7 @@ if ($orderNumber) {
 
                 <div class="order-items">
                     <h4>Item Pesanan</h4>
-                    <table class="order-table">
+                    <table class="order-table" width="100%">
                         <thead>
                             <tr>
                                 <th>Menu</th>
@@ -113,9 +113,9 @@ if ($orderNumber) {
                             <?php foreach ($orderItems as $item): ?>
                             <tr>
                                 <td><?= $item['name'] ?></td>
-                                <td>Rp <?= number_format($item['price'], 0, ',', '.') ?></td>
+                                <td class="text-end">Rp <?= number_format($item['price'], 0, ',', '.') ?></td>
                                 <td><?= $item['quantity'] ?></td>
-                                <td>Rp <?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?></td>
+                                <td class="text-end">Rp <?= number_format($item['price'] * $item['quantity'], 0, ',', '.') ?></td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
