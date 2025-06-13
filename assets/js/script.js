@@ -23,13 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const cartFloating = document.getElementById('cartFloating');
   const shoppingCartButton = document.getElementById('shopping-cart-button');
   
-  // Get cart data for specific user
-  const cartKey = `cart_${USER_ID}`;
-  console.log('Cart key:', cartKey);
-  console.log('Cart data:', localStorage.getItem(cartKey));
-  console.log('Cart id:', localStorage.getItem('orderIds'));
-  
-  let cart = JSON.parse(localStorage.getItem(cartKey)) || [];
+  let cart = [];
   let currentModalItemId = null;
 
   // Add cart badge to shopping cart button
@@ -39,7 +33,10 @@ document.addEventListener('DOMContentLoaded', function() {
   shoppingCartButton.appendChild(cartBadge);
 
   // Initialize cart display on page load
-  updateCart();
+  if (USER_ROLE == 'customer') {
+      loadCart();
+      // return;
+    }
 
   // Toggle cart expansion
   cartFloating.addEventListener('click', function(e) {
@@ -69,6 +66,20 @@ document.addEventListener('DOMContentLoaded', function() {
       // cartFloating.classList.remove('expanded');
     }
   });
+
+  // Function to load cart from database
+  async function loadCart() {
+    try {
+      const response = await fetch('functions/cart_operations.php');
+      const data = await response.json();
+      if (data.success) {
+        cart = data.cart;
+        updateCart();
+      }
+    } catch (error) {
+      console.error('Error loading cart:', error);
+    }
+  }
 
   // Function to show modal with item details
   window.showDetail = function(itemId) {
@@ -102,7 +113,13 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Function to add item to cart
-  window.addToCart = function(itemId) {
+  window.addToCart = async function(itemId) {
+    if (!USER_ID) {
+      alert('Harap login terlebih dahulu');
+      window.location.href = 'login.php';
+      return;
+    }
+
     const menuCard = document.querySelector(`[data-id="${itemId}"]`);
     const item = {
       id: itemId,
@@ -135,17 +152,28 @@ document.addEventListener('DOMContentLoaded', function() {
       flyingItem.remove();
     }, 800);
 
-    // Check if item already exists in cart
-    const existingItem = cart.find(cartItem => cartItem.id === itemId);
-    if (existingItem) {
-      existingItem.quantity++;
-    } else {
-      cart.push(item);
-    }
+    try {
+      const response = await fetch('functions/cart_operations.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          menuItemId: itemId,
+          quantity: 1
+        })
+      });
 
-    // Save to localStorage with user-specific key
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-    updateCart();
+      const data = await response.json();
+      if (data.success) {
+        await loadCart(); // Reload cart after adding item
+      } else {
+        alert('Gagal menambahkan item ke keranjang');
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      alert('Terjadi kesalahan saat menambahkan ke keranjang');
+    }
   }
 
   // Function to add item to cart from modal
@@ -176,12 +204,12 @@ document.addEventListener('DOMContentLoaded', function() {
           <p>Rp ${item.price.toLocaleString('id-ID')} x ${item.quantity}</p>
         </div>
         <div class="cart-item-actions">
-          <button onclick="updateQuantity(${item.id}, ${item.quantity - 1})">-</button>
+          <button onclick="updateQuantity(${item.menu_item_id}, ${item.quantity - 1})">-</button>
           <input type="number" value="${item.quantity}" min="1" 
-                 onchange="updateQuantityFromInput(${item.id}, this.value)"
-                 onkeyup="if(event.key === 'Enter') updateQuantityFromInput(${item.id}, this.value)">
-          <button onclick="updateQuantity(${item.id}, ${item.quantity + 1})">+</button>
-          <button onclick="removeFromCart(${item.id})">×</button>
+                 onchange="updateQuantityFromInput(${item.menu_item_id}, this.value)"
+                 onkeyup="if(event.key === 'Enter') updateQuantityFromInput(${item.menu_item_id}, this.value)">
+          <button onclick="updateQuantity(${item.menu_item_id}, ${item.quantity + 1})">+</button>
+          <button onclick="removeFromCart(${item.menu_item_id})">×</button>
         </div>
       `;
       cartItems.appendChild(cartItem);
@@ -203,27 +231,65 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Function to update item quantity
-  window.updateQuantity = function(itemId, newQuantity) {
+  window.updateQuantity = async function(itemId, newQuantity) {
+    if (!USER_ID) {
+      alert('Harap login terlebih dahulu');
+      window.location.href = 'login.php';
+      return;
+    }
+    
     if (newQuantity < 1) {
       removeFromCart(itemId);
       return;
     }
 
-    const item = cart.find(cartItem => cartItem.id === itemId);
-    if (item) {
-      item.quantity = newQuantity;
-      // Save to localStorage with user-specific key
-      localStorage.setItem(cartKey, JSON.stringify(cart));
-      updateCart();
+    try {
+      const response = await fetch('functions/cart_operations.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          menuItemId: itemId,
+          quantity: newQuantity
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await loadCart(); // Reload cart after updating quantity
+      } else {
+        alert('Gagal mengubah jumlah item');
+      }
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      alert('Terjadi kesalahan saat mengubah jumlah item');
     }
   }
 
   // Function to remove item from cart
-  window.removeFromCart = function(itemId) {
-    cart = cart.filter(item => item.id !== itemId);
-    // Save to localStorage with user-specific key
-    localStorage.setItem(cartKey, JSON.stringify(cart));
-    updateCart();
+  window.removeFromCart = async function(itemId) {
+    try {
+      const response = await fetch('functions/cart_operations.php', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          menuItemId: itemId
+        })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        await loadCart(); // Reload cart after removing item
+      } else {
+        alert('Gagal menghapus item dari keranjang');
+      }
+    } catch (error) {
+      console.error('Error removing from cart:', error);
+      alert('Terjadi kesalahan saat menghapus item dari keranjang');
+    }
   }
 
   // Function to process order
@@ -257,7 +323,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (data.success) {
         // Clear cart after successful order
         cart = [];
-        localStorage.removeItem(cartKey);
         updateCart();
         const orderIds = JSON.parse(localStorage.getItem('orderIds') || '[]');
         orderIds.push(data.orderNumber);

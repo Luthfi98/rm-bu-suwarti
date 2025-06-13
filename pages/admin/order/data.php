@@ -97,6 +97,7 @@ $orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage
                     <thead>
                         <tr>
                             <th>No. Pesanan</th>
+                            <th>Nama Pemesan</th>
                             <th>Tanggal</th>
                             <th>Total</th>
                             <th>Status</th>
@@ -106,12 +107,13 @@ $orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage
                     <tbody>
                         <?php if (empty($orders)): ?>
                         <tr>
-                            <td colspan="5" class="text-center">Tidak ada pesanan ditemukan</td>
+                            <td colspan="6" style="text-align: center;">Tidak ada pesanan ditemukan</td>
                         </tr>
                         <?php else: ?>
                             <?php foreach ($orders as $order): ?>
                             <tr>
                                 <td><?= htmlspecialchars($order['order_number']) ?></td>
+                                <td><?= htmlspecialchars($order['customer_name']) ?></td>
                                 <td><?= date('d/m/Y H:i', strtotime($order['created_at'])) ?></td>
                                 <td style="text-align: right;">Rp <?= number_format($order['total_amount'], 0, ',', '.') ?></td>
                                 <td style="text-align: center;">
@@ -221,6 +223,14 @@ $orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage
                                     <span class="info-label">Total</span>
                                     <span id="orderTotal" class="info-value"></span>
                                 </div>
+                                <div class="info-item">
+                                    <span class="info-label">Nama Pelanggan</span>
+                                    <span id="customerName" class="info-value"></span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Bukti Pembayaran</span>
+                                    <span id="buktiPembayaran" class="info-value"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -254,6 +264,8 @@ $orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage
                 <div class="status-update">
                     <select class="form-select" id="statusUpdate">
                         <option value="pending">Pending</option>
+                        <option value="waiting payment">Waiting Payment</option>
+                        <option value="waiting confirmation">Waiting Confirmation</option>
                         <option value="processing">Processing</option>
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>
@@ -306,6 +318,14 @@ function showOrderDetail(orderId) {
                     document.getElementById('orderStatus').innerHTML = `<span class="badge bg-${getStatusColor(order.status)}">${order.status}</span>`;
                     document.getElementById('orderTotal').textContent = `Rp ${parseInt(order.total_amount).toLocaleString('id-ID')}`;
                     document.getElementById('statusUpdate').value = order.status;
+                    document.getElementById('customerName').textContent = order.username;
+                    if (order.payment_proof) {
+                        document.getElementById('buktiPembayaran').innerHTML = `
+                            <img src="${order.payment_proof}" width="200px" height="200px" alt="Bukti Pembayaran" class="img-thumbnail">
+                        `;
+                    } else {
+                        document.getElementById('buktiPembayaran').innerHTML = '<p class="text-center">Belum ada bukti pembayaran</p>';
+                    }
                     
                     // Update items table
                     const tbody = document.getElementById('orderItemsTable').getElementsByTagName('tbody')[0];
@@ -398,6 +418,8 @@ function getStatusColor(status) {
         case 'processing': return 'info';
         case 'completed': return 'success';
         case 'cancelled': return 'danger';
+        case 'waiting confirmation': return 'primary';
+        case 'waiting payment': return 'secondary';
         default: return 'secondary';
     }
 }
@@ -414,6 +436,10 @@ function getStatusColor($status) {
             return 'success';
         case 'cancelled':
             return 'danger';
+        case 'waiting confirmation':
+            return 'primary';
+        case 'waiting payment':
+            return 'secondary';
         default:
             return 'secondary';
     }

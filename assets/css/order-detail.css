@@ -66,6 +66,8 @@
 }
 
 .order-status.pending { background-color: #ffeeba; color: #856404; }
+.order-status.waiting-confirmation { background-color: #fff3cd; color: #66512c; }
+.order-status.waiting-payment { background-color: #ffe0b2; color: #a94442; }
 .order-status.processing { background-color: #b8daff; color: #004085; }
 .order-status.completed { background-color: #c3e6cb; color: #155724; }
 .order-status.cancelled { background-color: #f5c6cb; color: #721c24; }

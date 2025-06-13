@@ -11,6 +11,7 @@ if ($isAjax) {
         exit;
     }else{
         $orderData = getOrderItems($_GET['id']);
+        // var_dump($orderData);die;
         echo json_encode([
             'success' => true,
             'order' => $orderData['order'],
@@ -33,8 +34,9 @@ if ($isAjax) {
 function getAllOrders($search = null, $status = null, $startDate = null, $endDate = null, $offset = 0, $limit = 10) {
     global $conn;
     try {
-        $query = "SELECT o.* 
+        $query = "SELECT o.*, u.username as customer_name
                  FROM orders o
+                 LEFT JOIN users u ON o.user_id = u.id
                  WHERE 1=1";
         $params = [];
 
@@ -65,6 +67,7 @@ function getAllOrders($search = null, $status = null, $startDate = null, $endDat
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch(PDOException $e) {
+        // var_dump($e->getMessage());die;
         error_log("Error getting orders: " . $e->getMessage());
         return [];
     }
@@ -119,8 +122,9 @@ function updateOrderStatus($orderId, $status) {
 function getOrderItems($orderId) {
     global $conn;
     try {
-         $query = "SELECT o.*
+         $query = "SELECT o.*, u.username
                      FROM orders o 
+                     LEFT JOIN users u ON o.user_id = u.id
                      WHERE o.id = ?";
             $stmt = $conn->prepare($query);
             $stmt->execute([$orderId]);

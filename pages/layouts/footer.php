@@ -75,7 +75,7 @@
   </script>
 
 
-  <?php if (!isset($_SESSION['user_id'])): ?>
+  <?php if (isset($_SESSION['role']) && $_SESSION['role'] !== 'admin'): ?>
     
     
     

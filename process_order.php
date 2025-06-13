@@ -46,8 +46,12 @@ function generateOrderNumber() {
 function processOrder($cartData) {
     global $conn;
     try {
+        // var_dump($cartData);die;
         // Start transaction
         $conn->beginTransaction();
+        // Get user ID from session
+        $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
+
 
         // Generate order number
         $orderNumber = generateOrderNumber();
@@ -59,9 +63,10 @@ function processOrder($cartData) {
         }
 
         // Insert into orders table
-        $orderSql = "INSERT INTO orders (order_number, total_amount, status, created_at) VALUES (?, ?, 'pending', NOW())";
+        $orderSql = "INSERT INTO orders (order_number, user_id, total_amount, status, created_at) VALUES (?, ?, ?, 'waiting payment', NOW())";
+        
         $orderStmt = $conn->prepare($orderSql);
-        $orderStmt->execute([$orderNumber, $totalAmount]);
+        $orderStmt->execute([$orderNumber, $userId, $totalAmount]);
         
         // Get the last inserted order ID
         $orderId = $conn->lastInsertId();
@@ -73,14 +78,18 @@ function processOrder($cartData) {
         foreach ($cartData as $item) {
             $itemStmt->execute([
                 $orderId,
-                $item['id'],
+                $item['menu_item_id'],
                 $item['quantity'],
                 $item['price']
             ]);
         }
+        
 
         // Commit transaction
         $_SESSION['orderIds'][] = $orderNumber;
+        // Delete cart items
+        $cartStmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
+        $cartStmt->execute([$userId]);
         // var_dump($_SESSION);die;
         $conn->commit();
         return [
