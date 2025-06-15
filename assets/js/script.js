@@ -30,7 +30,37 @@ document.addEventListener('DOMContentLoaded', function() {
   const cartBadge = document.createElement('span');
   cartBadge.className = 'cart-badge';
   cartBadge.textContent = '0';
-  shoppingCartButton.appendChild(cartBadge);
+  if (shoppingCartButton && cartFloating) {
+    shoppingCartButton.appendChild(cartBadge);
+    // Toggle cart expansion
+    cartFloating.addEventListener('click', function(e) {
+      // Don't toggle if clicking on cart items or their actions
+      if (e.target.closest('.cart-item-actions')) {
+        return;
+      }
+      
+      // Don't toggle if clicking on checkout button
+      if (e.target.closest('.btn-checkout')) {
+        return;
+      }
+
+      cartFloating.classList.toggle('expanded');
+    });
+
+    // Toggle cart when clicking shopping cart button
+    shoppingCartButton.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation(); // Prevent event from bubbling up
+      cartFloating.classList.toggle('expanded');
+    });
+
+
+    document.addEventListener('click', function(e) {
+      if (!cartFloating.contains(e.target) && !shoppingCartButton.contains(e.target)) {
+        // cartFloating.classList.remove('expanded');
+      }
+    });
+  }
 
   // Initialize cart display on page load
   if (USER_ROLE == 'customer') {
@@ -38,34 +68,10 @@ document.addEventListener('DOMContentLoaded', function() {
       // return;
     }
 
-  // Toggle cart expansion
-  cartFloating.addEventListener('click', function(e) {
-    // Don't toggle if clicking on cart items or their actions
-    if (e.target.closest('.cart-item-actions')) {
-      return;
-    }
-    
-    // Don't toggle if clicking on checkout button
-    if (e.target.closest('.btn-checkout')) {
-      return;
-    }
-
-    cartFloating.classList.toggle('expanded');
-  });
-
-  // Toggle cart when clicking shopping cart button
-  shoppingCartButton.addEventListener('click', function(e) {
-    e.preventDefault();
-    e.stopPropagation(); // Prevent event from bubbling up
-    cartFloating.classList.toggle('expanded');
-  });
+  
 
   // Close cart when clicking outside
-  document.addEventListener('click', function(e) {
-    if (!cartFloating.contains(e.target) && !shoppingCartButton.contains(e.target)) {
-      // cartFloating.classList.remove('expanded');
-    }
-  });
+  
 
   // Function to load cart from database
   async function loadCart() {
@@ -350,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
       closeModal();
     }
   } else {
-    console.error('Error: closeBtn is null');
+    // console.error('Error: closeBtn is null');
   }
 
   // Close modal when clicking outside

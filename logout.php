@@ -14,7 +14,7 @@ if (isset($_COOKIE[session_name()])) {
 session_destroy();
 
 // Redirect to login page
-header("Location: login.php");
+echo "<script>alert('Anda berhasil logout'); window.location.href='login.php';</script>";
 exit();
 ?>
 

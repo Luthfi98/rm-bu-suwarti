@@ -53,7 +53,7 @@ $baseUrl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" :
           <a href="<?php echo $baseUrl ?>data-order.php">Order</a>
           <a href="<?php echo $baseUrl ?>data-rekening.php">Rekening</a>
           <!-- <a href="<?php echo $baseUrl ?>index.php?page=adminUser">User</a> -->
-          <a href="<?php echo $baseUrl ?>logout.php">Logout</a>
+          <a href="<?php echo $baseUrl ?>logout.php" onclick="return confirm('Anda yakin ingin logout?')">Logout</a>
         </div>
         <div class="navbar-extra">
           <a href="javascript:;" id="hamburger-menu"><i data-feather="menu"></i></a>
@@ -64,6 +64,11 @@ $baseUrl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" :
           <a href="<?php echo $baseUrl ?>#about">Tentang Kami</a>
           <a href="<?php echo $baseUrl ?>#menu">Menu</a>
           <a href="<?php echo $baseUrl ?>#contact">Kontak</a>
+          <?php if ($role === 'customer'): ?>
+            <!-- <a href="<?php echo $baseUrl ?>profile.php">Profile</a> -->
+            <a href="<?php echo $baseUrl ?>logout.php" onclick="return confirm('Anda yakin ingin logout?')">Logout</a>
+          <?php endif; ?>
+
         </div>
         <div class="navbar-extra">
           <a href="profile.php" id="search-button"><i data-feather="user"></i></a>

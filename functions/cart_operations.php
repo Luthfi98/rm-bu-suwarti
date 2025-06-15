@@ -65,7 +65,8 @@ function updateCartItem($userId, $menuItemId, $quantity) {
 
         if ($existingItem) {
             // Update quantity
-            $quantity = $existingItem['quantity'] + $quantity;
+            // $quantity = $existingItem['quantity'] + $quantity;
+            
             $stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE user_id = ? AND menu_item_id = ?");
             return $stmt->execute([$quantity, $userId, $menuItemId]);
         } else {

@@ -5,7 +5,7 @@ require_once 'config/database.php';
 
 // Process login
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
+    $username = filter_input(INPUT_POST, 'username', FILTER_DEFAULT);
     $password = $_POST['password'];
 
     if (empty($username) || empty($password)) {

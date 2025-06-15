@@ -379,7 +379,7 @@ $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <div class="cart-total">
         Total: <span id="cartTotal">Rp 0</span>
         <button class="btn-process" onclick="processOrder()">Proses</button>
-        <button class="btn-checkout">Checkout</button>
+        <!-- <button class="btn-checkout">Checkout</button> -->
       </div>
       <div class="cart-actions">
       </div>

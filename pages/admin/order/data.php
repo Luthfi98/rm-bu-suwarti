@@ -98,7 +98,7 @@ $orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage
                 }
                 .table {
                     width: 100%;
-                    min-width: 1000px;
+                    /* min-width: 1000px; */
                 }
             </style>
             <div class="table-responsive">
@@ -252,7 +252,7 @@ $orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage
                                 Item Pesanan
                             </div>
                             <div class="table-responsive">
-                                <table class="table" id="orderItemsTable">
+                                <table class="table" id="orderItemsTable" width="100%">
                                     <thead>
                                         <tr>
                                             <th>Menu</th>
@@ -342,10 +342,10 @@ function showOrderDetail(orderId) {
                     items.forEach(item => {
                         const row = tbody.insertRow();
                         row.innerHTML = `
-                            <td>${item.name}</td>
-                            <td>Rp ${parseInt(item.price).toLocaleString('id-ID')}</td>
-                            <td>${item.quantity}</td>
-                            <td>Rp ${parseInt(item.price * item.quantity).toLocaleString('id-ID')}</td>
+                            <td width="40%">${item.name}</td>
+                            <td width="15%">Rp ${parseInt(item.price).toLocaleString('id-ID')}</td>
+                            <td width="5%">${item.quantity}</td>
+                            <td width="20%">Rp ${parseInt(item.price * item.quantity).toLocaleString('id-ID')}</td>
                         `;
                     });
                     
