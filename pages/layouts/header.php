@@ -3,7 +3,7 @@ require_once 'config/database.php';
 session_start();
 $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
 $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
-$baseUrl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']);
+$baseUrl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" : "http") . "://" . $_SERVER['HTTP_HOST'] . dirname($_SERVER['PHP_SELF']).'/';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,7 +33,7 @@ $baseUrl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" :
     <?php endif; ?>
 
     <script>
-      var BASEURL = '<?php echo $baseUrl; ?>';
+      var BASEURL = '<?php echo $baseUrl; ?>/';
     </script>
 <script>
   // Pass user information to JavaScript
@@ -51,6 +51,7 @@ $baseUrl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" :
           <a href="<?php echo $baseUrl ?>dashboard.php">Dashboard</a>
           <a href="<?php echo $baseUrl ?>data-menu.php">Menu</a>
           <a href="<?php echo $baseUrl ?>data-order.php">Order</a>
+          <a href="<?php echo $baseUrl ?>data-rekening.php">Rekening</a>
           <!-- <a href="<?php echo $baseUrl ?>index.php?page=adminUser">User</a> -->
           <a href="<?php echo $baseUrl ?>logout.php">Logout</a>
         </div>

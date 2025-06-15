@@ -1,13 +1,14 @@
 <?php
 // session_start();
 // setcookie('orderIds', '', 0);
+// require_once 'functions/rekening.php';
+require_once 'pages/layouts/header.php';
 ?>
 
 <?php 
 
 // Get cart data from local storage using JavaScript
 
-require_once 'pages/layouts/header.php'; 
 $orderIds = isset($_SESSION['orderIds']) ? $_SESSION['orderIds'] : [];
 // var_dump($_SESSION);die;
 $userId = isset($_SESSION['user_id']) ? $_SESSION['user_id'] : null;
@@ -53,6 +54,12 @@ if ($orderNumber) {
         $orderItems = $itemsStmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
+
+// Get rekening data
+$rekeningSql = "SELECT * FROM rekening";
+$rekeningStmt = $conn->prepare($rekeningSql);
+$rekeningStmt->execute();
+$rekenings = $rekeningStmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <link rel="stylesheet" href="<?php echo $baseUrl ?>assets/css/order-detail.css">
@@ -104,6 +111,14 @@ if ($orderNumber) {
 
                 <div class="payment-proof-section">
                     <h4>Bukti Pembayaran</h4>
+                    <p>Silahkan transfer ke rekening di bawah ini:</p>
+                    <ul>
+                        <?php foreach ($rekenings as $rekening): ?>
+                            <li>
+                                <?= $rekening['bank'] ?> - <?= $rekening['number'] ?> - <?= $rekening['name'] ?>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
                     <?php if (!empty($order['payment_proof'])): ?>
                         <div class="payment-proof-display">
                             <img src="<?= $order['payment_proof'] ?>" alt="Bukti Pembayaran" class="payment-proof-image">
@@ -117,7 +132,7 @@ if ($orderNumber) {
                                     <input type="file" class="form-control" id="payment_proof" name="payment_proof" accept="image/jpeg,image/png,image/jpg" required>
                                     <small class="form-text text-muted">Format yang didukung: JPG, JPEG, PNG. Maksimal 5MB</small>
                                 </div>
-                                <button type="submit" class="btn btn-primary mt-3">Upload Bukti Pembayaran</button>
+                                <button type="submit" class="back-button">Upload Bukti Pembayaran</button>
                             </form>
                         </div>
                     <?php endif; ?>

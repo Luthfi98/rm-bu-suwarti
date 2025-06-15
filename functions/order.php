@@ -36,7 +36,7 @@ function getAllOrders($search = null, $status = null, $startDate = null, $endDat
     try {
         $query = "SELECT o.*, u.username as customer_name
                  FROM orders o
-                 LEFT JOIN users u ON o.user_id = u.id
+                 JOIN users u ON o.user_id = u.id
                  WHERE 1=1";
         $params = [];
 
@@ -171,7 +171,7 @@ function updateStatus($orderId, $status) {
 function getTotalOrders($search = null, $status = null, $startDate = null, $endDate = null) {
     global $conn;
     
-    $sql = "SELECT COUNT(*) as total FROM orders WHERE 1=1";
+    $sql = "SELECT COUNT(*) as total FROM orders o JOIN users u ON o.user_id = u.id WHERE 1=1";
     $params = array();
     
     if ($search) {

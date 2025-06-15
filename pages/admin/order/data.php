@@ -92,11 +92,20 @@ $orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage
     <!-- Orders Table -->
     <div class="orders-card">
         <div class="card-body">
+            <style>
+                .table-responsive {
+                    overflow-x: auto;
+                }
+                .table {
+                    width: 100%;
+                    min-width: 1000px;
+                }
+            </style>
             <div class="table-responsive">
-                <table class="table" width="100%">
+                <table class="table">
                     <thead>
                         <tr>
-                            <th>No. Pesanan</th>
+                            <th style="position: sticky; left: 0; background-color: white; word-wrap: break-word;" width="10%">No. Pesanan</th>
                             <th>Nama Pemesan</th>
                             <th>Tanggal</th>
                             <th>Total</th>
@@ -112,8 +121,8 @@ $orders = getAllOrders($search, $status, $startDate, $endDate, $offset, $perPage
                         <?php else: ?>
                             <?php foreach ($orders as $order): ?>
                             <tr>
-                                <td><?= htmlspecialchars($order['order_number']) ?></td>
-                                <td><?= htmlspecialchars($order['customer_name']) ?></td>
+                                <td style="position: sticky; left: 0; background-color: white;"><?= htmlspecialchars($order['order_number']) ?></td>
+                                <td style="word-wrap: break-word;"><?= htmlspecialchars($order['customer_name']) ?></td>
                                 <td><?= date('d/m/Y H:i', strtotime($order['created_at'])) ?></td>
                                 <td style="text-align: right;">Rp <?= number_format($order['total_amount'], 0, ',', '.') ?></td>
                                 <td style="text-align: center;">
