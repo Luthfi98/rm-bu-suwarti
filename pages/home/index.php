@@ -326,7 +326,7 @@ $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
   <div class="row">
     <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.310418030083!2d110.47835547420611!3d-7.756864876919365!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a5ba21c6e4e35%3A0x69ea28734920b9b!2sAyam%20Goreng%20Kalasan%20Bu%20Suwarti!5e0!3m2!1sid!2sid!4v1747458160668!5m2!1sid!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" class="map"></iframe>
     
-    <form action="index.php?page=contact&action=submit" method="POST">
+    <form id="contactForm" onsubmit="submitContact(event)">
       <div class="input-group">
         <i data-feather="user"></i>
         <input type="text" name="name" placeholder="nama" required>
@@ -385,4 +385,32 @@ $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
       </div>
     </div>
   </div>
-</div> 
+</div>
+
+<script>
+async function submitContact(event) {
+  event.preventDefault();
+  
+  const form = event.target;
+  const formData = new FormData(form);
+  
+  try {
+    const response = await fetch('functions/contact.php', {
+      method: 'POST',
+      body: formData
+    });
+    
+    const result = await response.json();
+    
+    if (result.success) {
+      alert('Pesan berhasil dikirim!');
+      form.reset();
+    } else {
+      alert('Gagal mengirim pesan: ' + result.message);
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    alert('Terjadi kesalahan saat mengirim pesan');
+  }
+}
+</script> 

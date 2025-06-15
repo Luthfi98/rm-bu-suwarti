@@ -52,6 +52,8 @@ $baseUrl = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on') ? "https" :
           <a href="<?php echo $baseUrl ?>data-menu.php">Menu</a>
           <a href="<?php echo $baseUrl ?>data-order.php">Order</a>
           <a href="<?php echo $baseUrl ?>data-rekening.php">Rekening</a>
+          <a href="<?php echo $baseUrl ?>data-contact.php">Kontak</a>
+          <!-- <a href="<?php echo $baseUrl ?>contact.php">Kontak</a> -->
           <!-- <a href="<?php echo $baseUrl ?>index.php?page=adminUser">User</a> -->
           <a href="<?php echo $baseUrl ?>logout.php" onclick="return confirm('Anda yakin ingin logout?')">Logout</a>
         </div>
